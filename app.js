@@ -10,6 +10,7 @@ app.use(cors(corsOpt));
 
 const filePath = "C:/Users/User/Desktop/NODE Express Portal/userData.json";
 
+//Workers Editor
 app.get("/v1/workersEditor", async (req, res) => {
   try {
     const userData = JSON.parse(await readFile(filePath, "utf8"));
@@ -55,4 +56,6 @@ app.delete("/v1/workersEditor/:userId", async (req, res) => {
   }
 });
 
-app.listen(3000);
+app.listen(3000, () => {
+  console.log("Done!");
+});
