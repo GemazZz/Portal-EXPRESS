@@ -85,6 +85,19 @@ app.post("/v1/specialsEditor/:special", async (req, res) => {
   }
 });
 
+app.delete("/v1/specialsEditor/:special", async (req, res) => {
+  const special = req.params.special;
+  try {
+    const specialsData = JSON.parse(await readFile(fileSpecialsDataPath, "utf8"));
+    const callbackData = specialsData.filter((user) => user.special !== special);
+    await writeFile(fileSpecialsDataPath, JSON.stringify(callbackData));
+    res.json(callbackData);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send("Error processing request");
+  }
+});
+
 app.listen(4000, () => {
   console.log("Done!");
 });
