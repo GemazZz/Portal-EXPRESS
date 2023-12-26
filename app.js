@@ -10,6 +10,7 @@ app.use(cors(corsOpt));
 
 const fileUserDataPath = "C:/Users/User/Desktop/NODE Express Portal/userData.json";
 const fileSpecialsDataPath = "C:/Users/User/Desktop/NODE Express Portal/specialsData.json";
+const fileQuestionDataPath = "C:/Users/User/Desktop/NODE Express Portal/questionData.json";
 
 //Workers Editor
 app.get("/v1/workersEditor", async (req, res) => {
@@ -92,6 +93,17 @@ app.delete("/v1/specialsEditor/:special", async (req, res) => {
     const callbackData = specialsData.filter((user) => user.special !== special);
     await writeFile(fileSpecialsDataPath, JSON.stringify(callbackData));
     res.json(callbackData);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send("Error processing request");
+  }
+});
+
+//Question Editor
+app.get("/v1/questionEditor", async (req, res) => {
+  try {
+    const questionData = JSON.parse(await readFile(fileQuestionDataPath, "utf8"));
+    res.json(questionData);
   } catch (error) {
     console.error("Error:", error);
     res.status(500).send("Error processing request");
