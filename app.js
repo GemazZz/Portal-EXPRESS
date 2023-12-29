@@ -7,6 +7,7 @@ const corsOpt = {
   origin: "http://192.168.101.44:3000",
 };
 app.use(cors(corsOpt));
+app.use(express.json());
 
 const fileUserDataPath = "C:/Users/User/Desktop/NODE Express Portal/userData.json";
 const fileSpecialsDataPath = "C:/Users/User/Desktop/NODE Express Portal/specialsData.json";
@@ -100,10 +101,33 @@ app.delete("/v1/specialsEditor/:special", async (req, res) => {
 });
 
 //Question Editor
-app.get("/v1/questionEditor", async (req, res) => {
+app.get("/v1/questionEditor/:special", async (req, res) => {
+  const { special } = req.params;
+  console.log(special);
   try {
     const questionData = JSON.parse(await readFile(fileQuestionDataPath, "utf8"));
-    res.json(questionData);
+    const filteredData = questionData.filter((question) => {
+      return question.category === special;
+    });
+    console.log(filteredData);
+    res.json(filteredData);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send("Error processing request");
+  }
+});
+
+app.post("/v1/questionEditor", async (req, res) => {
+  const question = req.body;
+  try {
+    const questionData = JSON.parse(await readFile(fileQuestionDataPath, "utf8"));
+    if (questionData.some((existingQuestion) => existingQuestion.questionId === question.questionId)) {
+      res.status(400).send("Already Added!");
+    } else {
+      const callbackData = [...questionData, question];
+      await writeFile(fileQuestionDataPath, JSON.stringify(callbackData));
+      res.status(200).send("Question Added!");
+    }
   } catch (error) {
     console.error("Error:", error);
     res.status(500).send("Error processing request");
