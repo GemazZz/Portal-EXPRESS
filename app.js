@@ -4,14 +4,14 @@ const app = express();
 const { readFile, writeFile } = require("fs").promises;
 
 const corsOpt = {
-  origin: "http://192.168.101.44:3000",
+  origin: ["http://192.168.101.44:3000", "http://192.168.1.14:3000"],
 };
 app.use(cors(corsOpt));
 app.use(express.json());
 
-const fileUserDataPath = "C:/Users/User/Desktop/NODE Express Portal/userData.json";
-const fileSpecialsDataPath = "C:/Users/User/Desktop/NODE Express Portal/specialsData.json";
-const fileQuestionDataPath = "C:/Users/User/Desktop/NODE Express Portal/questionData.json";
+const fileUserDataPath = "C:C:/Users/GemazZz_/Desktop/TAM/NODE-Express-Portal/userData.json";
+const fileSpecialsDataPath = "C:/Users/GemazZz_/Desktop/TAM/NODE-Express-Portal/specialsData.json";
+const fileQuestionDataPath = "C:/Users/GemazZz_/Desktop/TAM/NODE-Express-Portal/questionData.json";
 
 //Workers Editor
 app.get("/v1/workersEditor", async (req, res) => {
@@ -103,13 +103,11 @@ app.delete("/v1/specialsEditor/:special", async (req, res) => {
 //Question Editor
 app.get("/v1/questionEditor/:special", async (req, res) => {
   const { special } = req.params;
-  console.log(special);
   try {
     const questionData = JSON.parse(await readFile(fileQuestionDataPath, "utf8"));
     const filteredData = questionData.filter((question) => {
       return question.category === special;
     });
-    console.log(filteredData);
     res.json(filteredData);
   } catch (error) {
     console.error("Error:", error);
@@ -132,6 +130,18 @@ app.post("/v1/questionEditor", async (req, res) => {
     console.error("Error:", error);
     res.status(500).send("Error processing request");
   }
+});
+
+app.delete("/v1/questionEditor/:questionId", async (req, res) => {
+  const questionId = req.params.questionId;
+  const questionData = JSON.parse(await readFile(fileQuestionDataPath, "utf8"));
+  console.log(questionData);
+  const filteredData = questionData.filter((question) => {
+    return question.questionId !== parseInt(questionId);
+  });
+  console.log(filteredData);
+  await writeFile(fileQuestionDataPath, JSON.stringify(filteredData));
+  res.json({ message: "Done!" });
 });
 
 app.listen(4000, () => {
