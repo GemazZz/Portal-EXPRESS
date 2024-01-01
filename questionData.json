@@ -1,1 +1,46 @@
-[]
+[
+  {
+    "question": "ტექნოლოგი",
+    "multipleAnswer": false,
+    "questionId": 1704116506247,
+    "category": "ტექნოლოგი",
+    "correctAnswer": "1",
+    "secondAnswer": "2",
+    "thirdAnswer": "3",
+    "fourthAnswer": "4"
+  },
+  {
+    "question": "პროგრამისტი",
+    "multipleAnswer": false,
+    "questionId": 1704116518856,
+    "category": "პროგრამისტი",
+    "correctAnswer": "1",
+    "secondAnswer": "2",
+    "thirdAnswer": "3",
+    "fourthAnswer": "4"
+  },
+  {
+    "question": "მსახიობი",
+    "multipleAnswer": false,
+    "questionId": 1704116529014,
+    "category": "მსახიობი",
+    "correctAnswer": "1",
+    "secondAnswer": "2",
+    "thirdAnswer": "3",
+    "fourthAnswer": "4"
+  },
+  {
+    "question": "ტექნოლოგი მულტი",
+    "multipleAnswer": true,
+    "questionId": 1704119505026,
+    "category": "ტექნოლოგი",
+    "firstAnswer": "1",
+    "checkFirstAnswer": false,
+    "secondAnswer": "2",
+    "checkSecondAnswer": true,
+    "thirdAnswer": "3",
+    "checkThirdAnswer": true,
+    "fourthAnswer": "4",
+    "checkFourthAnswer": false
+  }
+]

@@ -9,7 +9,7 @@ const corsOpt = {
 app.use(cors(corsOpt));
 app.use(express.json());
 
-const fileUserDataPath = "C:C:/Users/GemazZz_/Desktop/TAM/NODE-Express-Portal/userData.json";
+const fileUserDataPath = "C:/Users/GemazZz_/Desktop/TAM/NODE-Express-Portal/userData.json";
 const fileSpecialsDataPath = "C:/Users/GemazZz_/Desktop/TAM/NODE-Express-Portal/specialsData.json";
 const fileQuestionDataPath = "C:/Users/GemazZz_/Desktop/TAM/NODE-Express-Portal/questionData.json";
 
@@ -135,12 +135,52 @@ app.post("/v1/questionEditor", async (req, res) => {
 app.delete("/v1/questionEditor/:questionId", async (req, res) => {
   const questionId = req.params.questionId;
   const questionData = JSON.parse(await readFile(fileQuestionDataPath, "utf8"));
-  console.log(questionData);
   const filteredData = questionData.filter((question) => {
     return question.questionId !== parseInt(questionId);
   });
-  console.log(filteredData);
   await writeFile(fileQuestionDataPath, JSON.stringify(filteredData));
+  res.json({ message: "Done!" });
+});
+
+//usersAnswers
+app.post("/v1/stats", async (req, res) => {
+  const userAnswers = req.body;
+  const date =
+    new Date().getFullYear() +
+    "წ. " +
+    new Date().getDate() +
+    " " +
+    (new Date().getMonth() === 0
+      ? "იანვარი"
+      : new Date().getMonth() === 1
+      ? "თებერვალი"
+      : new Date().getMonth() === 2
+      ? "მარტი"
+      : new Date().getMonth() === 3
+      ? "აპრილი"
+      : new Date().getMonth() === 4
+      ? "მაისი"
+      : new Date().getMonth() === 5
+      ? "ივნისი"
+      : new Date().getMonth() === 6
+      ? "ივლისი"
+      : new Date().getMonth() === 7
+      ? "აგვისტო"
+      : new Date().getMonth() === 8
+      ? "სექტემბერი"
+      : new Date().getMonth() === 9
+      ? "ოქტომბერი"
+      : new Date().getMonth() === 10
+      ? "ნოემბერი"
+      : new Date().getMonth() === 11
+      ? "დეკემბერი"
+      : new Error("Invalid month")) +
+    ", " +
+    new Date().getHours() +
+    ":" +
+    new Date().getMinutes();
+  userAnswers.date = date;
+  console.log(userAnswers);
   res.json({ message: "Done!" });
 });
 
