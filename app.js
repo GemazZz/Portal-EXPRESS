@@ -145,6 +145,16 @@ app.delete("/v1/questionEditor/:questionId", async (req, res) => {
 });
 
 //usersAnswers
+app.get("/v1/stats", async (req, res) => {
+  try {
+    const stats = JSON.parse(await readFile(fileStatsPath, "utf8"));
+    res.json(stats);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send("Error processing request");
+  }
+});
+
 app.post("/v1/stats", async (req, res) => {
   const userAnswers = req.body;
   const date = getDataFunc();
@@ -177,14 +187,14 @@ app.post("/v1/stats", async (req, res) => {
   res.json({ message: "Done!" });
 });
 
-app.delete("/v1/stats/:statId", async (req, res) => {
-  const statId = req.params.statId;
+app.delete("/v1/stats/:statsId", async (req, res) => {
+  const statsId = req.params.statsId;
   const stats = JSON.parse(await readFile(fileStatsPath, "utf8"));
   const filteredData = stats.filter((stat) => {
-    return stat.statId !== parseInt(statId);
+    return stat.statsId !== parseInt(statsId);
   });
   await writeFile(fileStatsPath, JSON.stringify(filteredData));
-  res.json({ message: "Done!" });
+  res.json(filteredData);
 });
 
 app.listen(4000, () => {
