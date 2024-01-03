@@ -1,4 +1,5 @@
 const getDataFunc = () => {
+  const minutes = new Date().getMinutes() > 10 ? new Date().getMinutes() : "0" + new Date().getMinutes();
   const date =
     new Date().getFullYear() +
     "წ. " +
@@ -32,8 +33,28 @@ const getDataFunc = () => {
     ", " +
     new Date().getHours() +
     ":" +
-    new Date().getMinutes();
+    minutes;
   return date;
 };
 
-module.exports = { getDataFunc };
+const ObjectCompareFunc = (obj1, obj2) => {
+  let score = 0;
+  Object.keys(obj1).forEach((key) => {
+    if (obj2.hasOwnProperty(key)) {
+      if (Array.isArray(obj1[key]) && Array.isArray(obj2[key])) {
+        const sortedArr1 = obj1[key].slice().sort();
+        const sortedArr2 = obj2[key].slice().sort();
+        if (JSON.stringify(sortedArr1) === JSON.stringify(sortedArr2)) {
+          score += 1;
+        }
+      } else {
+        if (obj1[key] === obj2[key]) {
+          score += 1;
+        }
+      }
+    }
+  });
+  return score;
+};
+
+module.exports = { getDataFunc, ObjectCompareFunc };

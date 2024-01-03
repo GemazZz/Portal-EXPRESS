@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { getDataFunc } = require("./helpers");
+const { getDataFunc, ObjectCompareFunc } = require("./helpers");
 const app = express();
 const { readFile, writeFile } = require("fs").promises;
 
@@ -10,9 +10,10 @@ const corsOpt = {
 app.use(cors(corsOpt));
 app.use(express.json());
 
-const fileUserDataPath = "C:/Users/GemazZz_/Desktop/TAM/NODE-Express-Portal/userData.json";
-const fileSpecialsDataPath = "C:/Users/GemazZz_/Desktop/TAM/NODE-Express-Portal/specialsData.json";
-const fileQuestionDataPath = "C:/Users/GemazZz_/Desktop/TAM/NODE-Express-Portal/questionData.json";
+const fileUserDataPath = "C:/Users/GemazZz_/Desktop/TAM/NODE-Express-Portal/data/userData.json";
+const fileSpecialsDataPath = "C:/Users/GemazZz_/Desktop/TAM/NODE-Express-Portal/data/specialsData.json";
+const fileQuestionDataPath = "C:/Users/GemazZz_/Desktop/TAM/NODE-Express-Portal/data/questionData.json";
+const fileStatsPath = "C:/Users/GemazZz_/Desktop/TAM/NODE-Express-Portal/data/stats.json";
 
 //Workers Editor
 app.get("/v1/workersEditor", async (req, res) => {
@@ -148,7 +149,41 @@ app.post("/v1/stats", async (req, res) => {
   const userAnswers = req.body;
   const date = getDataFunc();
   userAnswers.date = date;
-  console.log(userAnswers);
+  userAnswers.statId = new Date().getTime();
+  const questionData = JSON.parse(await readFile(fileQuestionDataPath, "utf8"));
+  const filteredData = questionData.filter((question) => {
+    return question.category === userAnswers.special;
+  });
+  const obj = {};
+  filteredData.forEach((question) => {
+    if (!question.multipleAnswer) {
+      obj[question.questionId] = question.correctAnswer;
+    } else {
+      const answers = [];
+      if (question.checkFirstAnswer) answers.push(question.firstAnswer);
+      if (question.checkSecondAnswer) answers.push(question.secondAnswer);
+      if (question.checkThirdAnswer) answers.push(question.thirdAnswer);
+      if (question.checkFourthAnswer) answers.push(question.fourthAnswer);
+      obj[question.questionId] = answers;
+    }
+  });
+  const total = Object.keys(obj).length;
+  const score = ObjectCompareFunc(userAnswers, obj);
+  const result = `${score}/${total}`;
+  userAnswers.result = result;
+  const stats = JSON.parse(await readFile(fileStatsPath, "utf8"));
+  const callbackData = [userAnswers, ...stats];
+  await writeFile(fileStatsPath, JSON.stringify(callbackData));
+  res.json({ message: "Done!" });
+});
+
+app.delete("/v1/stats/:statId", async (req, res) => {
+  const statId = req.params.statId;
+  const stats = JSON.parse(await readFile(fileStatsPath, "utf8"));
+  const filteredData = stats.filter((stat) => {
+    return stat.statId !== parseInt(statId);
+  });
+  await writeFile(fileStatsPath, JSON.stringify(filteredData));
   res.json({ message: "Done!" });
 });
 

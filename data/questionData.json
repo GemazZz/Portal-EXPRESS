@@ -42,5 +42,15 @@
     "checkThirdAnswer": true,
     "fourthAnswer": "4",
     "checkFourthAnswer": false
+  },
+  {
+    "question": "12312",
+    "multipleAnswer": false,
+    "questionId": 1704184243544,
+    "category": "ტექნოლოგი",
+    "correctAnswer": "12",
+    "secondAnswer": "32",
+    "thirdAnswer": "432",
+    "fourthAnswer": "1234"
   }
 ]
