@@ -159,7 +159,7 @@ app.post("/v1/stats", async (req, res) => {
   const userAnswers = req.body;
   const date = getDataFunc();
   userAnswers.date = date;
-  userAnswers.statId = new Date().getTime();
+  userAnswers.statsId = new Date().getTime();
   const questionData = JSON.parse(await readFile(fileQuestionDataPath, "utf8"));
   const filteredData = questionData.filter((question) => {
     return question.category === userAnswers.special;
