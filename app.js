@@ -5,15 +5,15 @@ const app = express();
 const { readFile, writeFile } = require("fs").promises;
 
 const corsOpt = {
-  origin: ["http://192.168.101.44:3000", "http://192.168.1.14:3000"],
+  origin: ["http://192.168.101.44:3000", "http://192.168.101.215:3000"],
 };
 app.use(cors(corsOpt));
 app.use(express.json());
 
-const fileUserDataPath = "C:/Users/GemazZz_/Desktop/TAM/NODE-Express-Portal/data/userData.json";
-const fileSpecialsDataPath = "C:/Users/GemazZz_/Desktop/TAM/NODE-Express-Portal/data/specialsData.json";
-const fileQuestionDataPath = "C:/Users/GemazZz_/Desktop/TAM/NODE-Express-Portal/data/questionData.json";
-const fileStatsPath = "C:/Users/GemazZz_/Desktop/TAM/NODE-Express-Portal/data/stats.json";
+const fileUserDataPath = "C:/Users/User/Desktop/NODE Express Portal/data/userData.json";
+const fileSpecialsDataPath = "C:/Users/User/Desktop/NODE Express Portal/data/specialsData.json";
+const fileQuestionDataPath = "C:/Users/User/Desktop/NODE Express Portal/data/questionData.json";
+const fileStatsPath = "C:/Users/User/Desktop/NODE Express Portal/data/stats.json";
 
 //Workers Editor
 app.get("/v1/workersEditor", async (req, res) => {
@@ -197,6 +197,8 @@ app.delete("/v1/stats/:statsId", async (req, res) => {
   res.json(filteredData);
 });
 
-app.listen(4000, () => {
+const HOST_IP = "192.168.101.44";
+
+app.listen(4000, HOST_IP, () => {
   console.log("Done!");
 });
