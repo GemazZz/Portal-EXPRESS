@@ -5,7 +5,7 @@ const app = express();
 const { readFile, writeFile } = require("fs").promises;
 
 const corsOpt = {
-  origin: ["http://192.168.101.44:3000", "http://192.168.101.215:3000"],
+  origin: ["http://192.168.101.44:3000", "http://localhost:3000"],
 };
 app.use(cors(corsOpt));
 app.use(express.json());
