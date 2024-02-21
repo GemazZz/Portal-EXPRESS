@@ -179,7 +179,8 @@ app.post("/v1/stats", async (req, res) => {
   });
   const total = Object.keys(obj).length;
   const score = ObjectCompareFunc(userAnswers, obj);
-  const result = `${score}/${total}`;
+  const percent = Math.floor((score / total) * 100);
+  const result = `${score}/${total}  -  ${percent}%`;
   userAnswers.result = result;
   const stats = JSON.parse(await readFile(fileStatsPath, "utf8"));
   const callbackData = [userAnswers, ...stats];
