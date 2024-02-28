@@ -79,7 +79,7 @@ app.post("/v1/specialsEditor/:special", async (req, res) => {
     if (specialsData.some((existingSpecial) => existingSpecial.special === special)) {
       res.status(400).send("Already Added!");
     } else {
-      const callbackData = [...specialsData, { special }];
+      const callbackData = [{ special }, ...specialsData];
       await writeFile(fileSpecialsDataPath, JSON.stringify(callbackData));
       res.json(callbackData);
     }
