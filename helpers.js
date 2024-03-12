@@ -1,5 +1,5 @@
 const getDataFunc = () => {
-  const minutes = new Date().getMinutes() > 10 ? new Date().getMinutes() : "0" + new Date().getMinutes();
+  const minutes = new Date().getMinutes() > 9 ? new Date().getMinutes() : "0" + new Date().getMinutes();
   const date =
     new Date().getFullYear() +
     "წ. " +

@@ -158,6 +158,7 @@ app.get("/v1/stats", async (req, res) => {
 app.post("/v1/stats/:time", async (req, res) => {
   const userAnswers = req.body;
   const time = req.params.time;
+  userAnswers.time = time;
   const date = getDataFunc();
   userAnswers.date = date;
   userAnswers.statsId = new Date().getTime();
@@ -183,7 +184,6 @@ app.post("/v1/stats/:time", async (req, res) => {
   const percent = Math.ceil((score / total) * 100);
   const result = `${score}/${total}  ||  ${percent}%`;
   userAnswers.result = result;
-  userAnswers.time = time;
   const stats = JSON.parse(await readFile(fileStatsPath, "utf8"));
   const callbackData = [userAnswers, ...stats];
   await writeFile(fileStatsPath, JSON.stringify(callbackData));
