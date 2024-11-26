@@ -14,6 +14,7 @@ const fileUserDataPath = "C:/Users/User/Desktop/NODE Express Portal/data/userDat
 const fileSpecialsDataPath = "C:/Users/User/Desktop/NODE Express Portal/data/specialsData.json";
 const fileQuestionDataPath = "C:/Users/User/Desktop/NODE Express Portal/data/questionData.json";
 const fileStatsPath = "C:/Users/User/Desktop/NODE Express Portal/data/stats.json";
+const fileProblemsDataPath = "C:/Users/User/Desktop/NODE Express Portal/data/problemsData.json";
 
 //Workers Editor
 app.get("/v1/workersEditor", async (req, res) => {
@@ -198,6 +199,22 @@ app.delete("/v1/stats/:statsId", async (req, res) => {
   });
   await writeFile(fileStatsPath, JSON.stringify(filteredData));
   res.json(filteredData);
+});
+
+//Problems
+
+app.post("/v1/problems", async (req, res) => {
+  const problem = req.body;
+  console.log(req.body);
+  try {
+    const problemData = JSON.parse(await readFile(fileProblemsDataPath, "utf8"));
+    const callbackData = [...problemData, problem];
+    await writeFile(fileProblemsDataPath, JSON.stringify(callbackData));
+    res.status(200).send("Problem Added!");
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send("Error processing request");
+  }
 });
 
 const HOST_IP = "192.168.101.44";
