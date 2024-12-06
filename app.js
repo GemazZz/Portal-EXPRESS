@@ -205,7 +205,39 @@ app.delete("/v1/stats/:statsId", async (req, res) => {
 
 app.post("/v1/problems", async (req, res) => {
   const problem = req.body;
-  console.log(req.body);
+  problem.id = new Date().getTime();
+  problem.solution = "";
+  problem.isSolved = false;
+  try {
+    const problemData = JSON.parse(await readFile(fileProblemsDataPath, "utf8"));
+    const callbackData = [...problemData, problem];
+    await writeFile(fileProblemsDataPath, JSON.stringify(callbackData));
+    res.status(200).send("Problem Added!");
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send("Error processing request");
+  }
+});
+
+app.get("/v1/problems", async (req, res) => {
+  try {
+    const problems = JSON.parse(await readFile(fileProblemsDataPath, "utf8"));
+    res.json(problems);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send("Error processing request");
+  }
+});
+
+app.post("/v1/problems/:problemId", async (req, res) => {
+  const problemId = req.params.problemId;
+  const problems = JSON.parse(await readFile(fileProblemsDataPath, "utf8"));
+  const problem = problems.find((problem) => {
+    return problem.id === parseInt(problemId);
+  });
+  const problemUpdate = req.body;
+  problem.solution = problemUpdate.solution;
+  problem.isSolved = problemUpdate.isSolved;
   try {
     const problemData = JSON.parse(await readFile(fileProblemsDataPath, "utf8"));
     const callbackData = [...problemData, problem];
