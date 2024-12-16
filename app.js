@@ -5,7 +5,7 @@ const app = express();
 const { readFile, writeFile } = require("fs").promises;
 
 const corsOpt = {
-  origin: ["http://192.168.101.44:3000", "http://localhost:3000"],
+  origin: ["http://192.168.101.136:3000", "http://localhost:3000"],
 };
 app.use(cors(corsOpt));
 app.use(express.json());
@@ -207,6 +207,7 @@ app.post("/v1/problems", async (req, res) => {
   const problem = req.body;
   problem.id = new Date().getTime();
   problem.solution = "";
+  problem.date = getDataFunc();
   problem.isSolved = false;
   try {
     const problemData = JSON.parse(await readFile(fileProblemsDataPath, "utf8"));
@@ -249,7 +250,22 @@ app.post("/v1/problems/:problemId", async (req, res) => {
   }
 });
 
-const HOST_IP = "192.168.101.44";
+app.delete("/v1/problems/:problemId", async (req, res) => {
+  const problemId = req.params.problemId;
+  const problemsArr = JSON.parse(await readFile(fileProblemsDataPath, "utf8"));
+  const filteredProblems = problemsArr.filter((problem) => {
+    return problem.id !== parseInt(problemId);
+  });
+  try {
+    await writeFile(fileProblemsDataPath, JSON.stringify(filteredProblems));
+    res.status(200).send("Problem Deleted!");
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send("Error processing request");
+  }
+});
+
+const HOST_IP = "192.168.101.136";
 
 app.listen(4000, HOST_IP, () => {
   console.log("Done!");
