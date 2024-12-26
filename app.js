@@ -209,9 +209,10 @@ app.post("/v1/problems", async (req, res) => {
   problem.solution = "";
   problem.date = getDataFunc();
   problem.isSolved = false;
+  problem.solvedTime = "";
   try {
     const problemData = JSON.parse(await readFile(fileProblemsDataPath, "utf8"));
-    const callbackData = [...problemData, problem];
+    const callbackData = [problem, ...problemData];
     await writeFile(fileProblemsDataPath, JSON.stringify(callbackData));
     res.status(200).send("Problem Added!");
   } catch (error) {
@@ -230,6 +231,20 @@ app.get("/v1/problems", async (req, res) => {
   }
 });
 
+app.get("/v1/problems/:problemId", async (req, res) => {
+  try {
+    const problemId = req.params.problemId;
+    const problems = JSON.parse(await readFile(fileProblemsDataPath, "utf8"));
+    const callbackData = problems.filter((problem) => {
+      return problem.id === parseInt(problemId);
+    });
+    res.json(callbackData[0]);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send("Error processing request");
+  }
+});
+
 app.post("/v1/problems/:problemId", async (req, res) => {
   const problemId = req.params.problemId;
   const problems = JSON.parse(await readFile(fileProblemsDataPath, "utf8"));
@@ -239,9 +254,12 @@ app.post("/v1/problems/:problemId", async (req, res) => {
   const problemUpdate = req.body;
   problem.solution = problemUpdate.solution;
   problem.isSolved = problemUpdate.isSolved;
+  problem.solvedTime = getDataFunc();
   try {
-    const problemData = JSON.parse(await readFile(fileProblemsDataPath, "utf8"));
-    const callbackData = [...problemData, problem];
+    const filteredProblemData = problems.filter((problem) => {
+      return problem.id !== parseInt(problemId);
+    });
+    const callbackData = [problem, ...filteredProblemData];
     await writeFile(fileProblemsDataPath, JSON.stringify(callbackData));
     res.status(200).send("Problem Added!");
   } catch (error) {
